@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: radial-gradient(circle at 15% -10%, rgba(255, 90, 31, 0.12), transparent 42%), #0a0806;
+  color: #f3ede6;
+}
+
+::selection {
+  background: #ff5a1f;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0806;
+}
+::-webkit-scrollbar-thumb {
+  background: #2c1608;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b8360f;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-br from-orange to-rust text-white font-bold rounded-xl shadow-btn transition-transform duration-200;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+.btn-primary:active {
+  transform: translateY(2px);
+}
+.btn-primary:disabled {
+  @apply opacity-40 cursor-not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  @apply bg-white/5 hover:bg-white/10 text-cream rounded-xl border border-line transition-colors;
+}
+
+.card {
+  @apply bg-bg2 border border-line rounded-2xl;
+}
+
+.chip {
+  @apply bg-bg3 text-cream text-sm font-semibold rounded-full px-4 py-2 border border-transparent transition-all cursor-pointer;
+}
+.chip-active {
+  @apply bg-gradient-to-br from-orange to-rust text-white;
+}
+
+.input {
+  @apply w-full bg-white/5 border border-line rounded-xl px-4 py-3 text-white placeholder-cream/40 outline-none transition-colors;
+}
+.input:focus {
+  @apply border-orange bg-white/10;
+}
+
+.label {
+  @apply text-xs uppercase tracking-wide text-cream/60 font-semibold mb-1.5 block;
+}
