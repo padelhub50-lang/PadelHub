@@ -19,11 +19,11 @@ export default function HomePage() {
       <Header />
       <main>
         <Hero site={settings.site} />
-        <StatementSection />
         <BrandMarquee />
-        <RacketQuiz products={products} />
         <ProductGrid products={products} />
+        <StatementSection />
         <WhySection />
+        <RacketQuiz products={products} />
       </main>
       <Footer site={settings.site} />
     </>
