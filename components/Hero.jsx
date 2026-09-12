@@ -70,51 +70,45 @@ export default function Hero({ site }) {
   return (
     <section
       ref={root}
-      className="relative overflow-hidden bg-gradient-to-br from-[#181310] via-[#221208] to-[#3A1305]"
+      className="relative overflow-hidden bg-gradient-to-br from-[#181310] via-[#221208] to-[#3A1305] py-20 md:py-28"
     >
-      <div className="max-w-7xl mx-auto px-5 md:px-7 pt-16 md:pt-20 pb-10 grid md:grid-cols-2 gap-8 items-center">
-        <div className="text-center md:text-left order-2 md:order-1">
-          <div
-            data-hero-badge
-            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide bg-gold/10 border border-gold/25 text-gold px-4 py-1.5 rounded-full mb-6"
-          >
-            <Sparkles size={14} /> Офіційний екіпірувальник падел-гравців
-          </div>
+      {/* Animation sits full-bleed behind the copy, not beside it. */}
+      <div data-hero-visual className="absolute inset-0 z-0">
+        <HeroVisual />
+      </div>
+      {/* Dims the animation directly behind the text so it stays readable. */}
+      <div className="absolute inset-0 z-[5] bg-[radial-gradient(ellipse_60%_70%_at_50%_45%,rgba(10,8,6,0.6),transparent_75%)] pointer-events-none" />
 
-          <h1
-            data-hero-title
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight [perspective:600px]"
-          >
-            {site?.heroTitle}
-          </h1>
-
-          <p data-hero-subtitle className="mt-5 text-cream/70 text-base md:text-lg max-w-xl mx-auto md:mx-0">
-            {site?.heroSubtitle}
-          </p>
-
-          <div
-            data-hero-cta
-            className="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-3"
-          >
-            <a
-              ref={ctaRef}
-              href="#catalog"
-              className="btn-primary px-7 py-3.5 inline-flex items-center gap-2 will-change-transform"
-            >
-              Обрати спорядження <ArrowRight size={17} />
-            </a>
-            <span className="inline-flex items-center gap-2 text-sm text-cream/60 px-4 py-3.5">
-              <Truck size={16} /> Доставка по всій Україні
-            </span>
-          </div>
+      <div className="relative z-10 max-w-3xl mx-auto px-5 md:px-7 text-center flex flex-col items-center">
+        <div
+          data-hero-badge
+          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide bg-gold/10 border border-gold/25 text-gold px-4 py-1.5 rounded-full mb-6"
+        >
+          <Sparkles size={14} /> Офіційний екіпірувальник падел-гравців
         </div>
 
-        <div
-          data-hero-visual
-          className="order-1 md:order-2 relative h-[340px] md:h-[480px]"
+        <h1
+          data-hero-title
+          className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight [perspective:600px]"
         >
-          <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_50%_45%,rgba(255,138,61,0.18),transparent_70%)]" />
-          <HeroVisual />
+          {site?.heroTitle}
+        </h1>
+
+        <p data-hero-subtitle className="mt-5 text-cream/70 text-base md:text-lg max-w-xl">
+          {site?.heroSubtitle}
+        </p>
+
+        <div data-hero-cta className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <a
+            ref={ctaRef}
+            href="#catalog"
+            className="btn-primary px-7 py-3.5 inline-flex items-center gap-2 will-change-transform"
+          >
+            Обрати спорядження <ArrowRight size={17} />
+          </a>
+          <span className="inline-flex items-center gap-2 text-sm text-cream/60 px-4 py-3.5">
+            <Truck size={16} /> Доставка по всій Україні
+          </span>
         </div>
       </div>
     </section>
