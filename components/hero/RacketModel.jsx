@@ -14,6 +14,7 @@ function buildHeadShape(scale = 1) {
   const squash = 0.85; // flattens the head top-to-bottom without narrowing it
   const w = 1.15 * scale;
   const topW = 0.62 * scale;
+  const bottomW = 0.08 * scale; // tiny flat instead of a knife-sharp cusp
   const topY = 1.55 * scale * squash;
   const wideY = 0.55 * scale * squash;
   const bottomY = -1.45 * scale * squash;
@@ -21,7 +22,8 @@ function buildHeadShape(scale = 1) {
   shape.moveTo(-topW, topY);
   shape.quadraticCurveTo(0, topY * 1.08, topW, topY);
   shape.quadraticCurveTo(w * 1.05, topY * 0.6, w, wideY);
-  shape.quadraticCurveTo(w * 0.82, bottomY * 0.2, 0, bottomY);
+  shape.quadraticCurveTo(w * 0.82, bottomY * 0.2, bottomW, bottomY);
+  shape.quadraticCurveTo(0, bottomY * 1.06, -bottomW, bottomY);
   shape.quadraticCurveTo(-w * 0.82, bottomY * 0.2, -w, wideY);
   shape.quadraticCurveTo(-w * 1.05, topY * 0.6, -topW, topY);
   return shape;
@@ -120,9 +122,9 @@ export default function RacketModel({ reduceMotion }) {
     const geo = new THREE.ExtrudeGeometry(buildHeadShape(), {
       depth: 0.15,
       bevelEnabled: true,
-      bevelThickness: 0.03,
-      bevelSize: 0.025,
-      bevelSegments: 4,
+      bevelThickness: 0.05,
+      bevelSize: 0.045,
+      bevelSegments: 6,
       curveSegments: 28,
     });
     geo.center();
@@ -133,9 +135,9 @@ export default function RacketModel({ reduceMotion }) {
     const geo = new THREE.ExtrudeGeometry(buildFaceShape(), {
       depth: 0.16,
       bevelEnabled: true,
-      bevelThickness: 0.02,
-      bevelSize: 0.015,
-      bevelSegments: 3,
+      bevelThickness: 0.035,
+      bevelSize: 0.03,
+      bevelSegments: 5,
       curveSegments: 28,
     });
     geo.center();
@@ -147,7 +149,7 @@ export default function RacketModel({ reduceMotion }) {
 
   // Short tapered throat bridging the head's point into the handle.
   const throatGeometry = useMemo(() => new THREE.CylinderGeometry(0.22, 0.15, 0.34, 16), []);
-  const handleGeometry = useMemo(() => new THREE.CapsuleGeometry(0.155, 1.05, 6, 12), []);
+  const handleGeometry = useMemo(() => new THREE.CapsuleGeometry(0.155, 0.7, 6, 12), []);
 
   useFrame((state, delta) => {
     if (!group.current || reduceMotion) return;
@@ -182,12 +184,12 @@ export default function RacketModel({ reduceMotion }) {
         <meshStandardMaterial color="#141416" roughness={0.6} metalness={0.1} />
       </mesh>
 
-      <mesh geometry={handleGeometry} position={[0, -2.275, 0]} castShadow>
+      <mesh geometry={handleGeometry} position={[0, -2.1, 0]} castShadow>
         <meshStandardMaterial map={gripTexture} roughness={0.85} metalness={0} />
       </mesh>
 
       {/* Wrist-strap loop at the very end of the grip, not the throat. */}
-      <mesh position={[0, -2.955, 0.08]} rotation={[Math.PI / 2.4, 0, 0]}>
+      <mesh position={[0, -2.62, 0.08]} rotation={[Math.PI / 2.4, 0, 0]}>
         <torusGeometry args={[0.1, 0.022, 8, 20]} />
         <meshStandardMaterial color="#FF8A3D" roughness={0.4} metalness={0.3} />
       </mesh>
