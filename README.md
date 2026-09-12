@@ -58,13 +58,42 @@ DigitalOcean App Platform, звичайний VPS (з PM2/systemd).
 підключити окрему хмарну базу даних (Postgres/Turso) замість SQLite;
 для цього доведеться замінити `lib/db.js`.
 
-### Приклад деплою на Render
+### Деплой на Render через Blueprint (найпростіше)
+
+У репозиторії вже є готовий `render.yaml` — Render сам створить сервіс,
+диск і згенерує секрет, вам залишиться ввести лише один пароль.
+
+1. Запуште цей репозиторій на GitHub (якщо ще не там).
+2. Зареєструйтесь на https://render.com (можна через GitHub-акаунт).
+3. Dashboard → **New** → **Blueprint** → оберіть цей репозиторій.
+4. Render прочитає `render.yaml` і покаже сервіс `padel-hub` з диском на
+   1GB. Він попросить ввести значення для `ADMIN_PASSWORD` — придумайте
+   пароль адміністратора і вставте його.
+5. Натисніть **Apply** / **Deploy Blueprint**. Перша збірка триває
+   3-5 хвилин.
+6. Коли статус стане **Live** — відкрийте посилання виду
+   `https://padel-hub-xxxx.onrender.com`. Це вже робочий сайт.
+7. Зайдіть на `/admin` з паролем, який ви ввели на кроці 4, і одразу
+   змініть його в Налаштування → Безпека (щоб не лишати той, що вводили
+   в панелі Render).
+
+Тариф у `render.yaml` — `starter` (потрібен для постійного диска,
+приблизно $7/міс). Render попросить прив'язати картку при створенні
+платного сервісу.
+
+Оновлення сайту пізніше: просто запуште нові коміти в гілку — Render
+задеплоїть їх автоматично (можна вимкнути в налаштуваннях сервісу, якщо
+потрібен ручний деплой).
+
+### Ручне створення Web Service на Render (альтернатива)
+
+Якщо не хочете використовувати Blueprint:
 
 1. Створіть Web Service з цього репозиторію.
 2. Build Command: `npm install && npm run build`
 3. Start Command: `npm start`
-4. Додайте Persistent Disk (наприклад, 1GB, змонтований у `/app/data`) і
-   встановіть змінну середовища `DATABASE_DIR=/app/data`.
+4. Додайте Persistent Disk (наприклад, 1GB, змонтований у `/var/data`) і
+   встановіть змінну середовища `DATABASE_DIR=/var/data`.
 5. Додайте змінні середовища з `.env.example` (`ADMIN_PASSWORD`,
    `ADMIN_SESSION_SECRET`).
 
@@ -134,8 +163,9 @@ SendGrid, Resend тощо) — просто вкажіть відповідні 
 
 ## Технології
 
-Next.js 14 (App Router) · React 18 · Tailwind CSS · Framer Motion ·
-better-sqlite3 · nodemailer · stripe · lucide-react.
+Next.js 14 (App Router) · React 18 · Tailwind CSS · Framer Motion · GSAP ·
+Three.js / React Three Fiber · better-sqlite3 · nodemailer · stripe ·
+lucide-react.
 
 ## Структура проєкту
 
@@ -144,8 +174,10 @@ app/                 сторінки та API-роути (App Router)
   admin/             панель адміністратора (захищена)
   api/                серверні маршрути (товари, замовлення, оплата, пошта)
 components/          React-компоненти вітрини й адмінки
+  hero/              3D-сцена ракетки (react-three-fiber)
 context/             CartContext (кошик, localStorage)
 lib/                 доступ до БД, авторизація, пошта, оплата, Нова пошта
 scripts/seed.mjs     наповнення каталогу стартовими товарами
 data/                файл бази даних SQLite (створюється автоматично)
+render.yaml          Render Blueprint для одноклікового деплою
 ```
