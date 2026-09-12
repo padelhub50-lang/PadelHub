@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import ProductCard from "./ProductCard.jsx";
 
 export default function ProductGrid({ products }) {
@@ -10,8 +12,30 @@ export default function ProductGrid({ products }) {
   }, [products]);
 
   const [active, setActive] = useState("Всі");
+  const gridRef = useRef(null);
 
   const filtered = active === "Всі" ? products : products.filter((p) => p.category === active);
+
+  // Grid-aware "wave" reveal — replays on every category switch so filtering
+  // itself reads as a deliberate action, not just a re-render.
+  useGSAP(
+    () => {
+      if (!gridRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from(gridRef.current.querySelectorAll("[data-grid-item]"), {
+          opacity: 0,
+          scale: 0.92,
+          y: 16,
+          duration: 0.4,
+          stagger: { each: 0.06, from: "start", grid: "auto" },
+          ease: "back.out(1.4)",
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: gridRef, dependencies: [active, filtered.length] }
+  );
 
   return (
     <section id="catalog" className="max-w-7xl mx-auto px-5 md:px-7 py-16">
@@ -33,9 +57,11 @@ export default function ProductGrid({ products }) {
       {filtered.length === 0 ? (
         <p className="text-cream/50 text-center py-16">Товарів у цій категорії поки немає.</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filtered.map((p, i) => (
-            <ProductCard key={p.id} product={p} index={i} />
+        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          {filtered.map((p) => (
+            <div key={p.id} data-grid-item>
+              <ProductCard product={p} />
+            </div>
           ))}
         </div>
       )}

@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { ShoppingBag, ImageOff } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
 
@@ -15,20 +17,52 @@ const TAG_STYLES = {
   Знижка: "bg-bad/18 text-bad",
 };
 
-export default function ProductCard({ product, index = 0 }) {
+export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const cover = product.images?.[0];
+  const cardRef = useRef(null);
+  const imgRef = useRef(null);
+
+  useGSAP(
+    () => {
+      const card = cardRef.current;
+      const img = imgRef.current;
+      if (!card) return;
+
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const liftY = gsap.quickTo(card, "y", { duration: 0.25, ease: "power2.out" });
+        const liftShadow = gsap.quickTo(card, "boxShadow", { duration: 0.25, ease: "power2.out" });
+        const scaleImg = img ? gsap.quickTo(img, "scale", { duration: 0.4, ease: "power2.out" }) : null;
+
+        const onEnter = () => {
+          liftY(-6);
+          liftShadow("0 20px 40px rgba(0,0,0,0.35)");
+          scaleImg?.(1.08);
+        };
+        const onLeave = () => {
+          liftY(0);
+          liftShadow("0 0px 0px rgba(0,0,0,0)");
+          scaleImg?.(1);
+        };
+        card.addEventListener("pointerenter", onEnter);
+        card.addEventListener("pointerleave", onLeave);
+        return () => {
+          card.removeEventListener("pointerenter", onEnter);
+          card.removeEventListener("pointerleave", onLeave);
+        };
+      });
+      return () => mm.revert();
+    },
+    { scope: cardRef }
+  );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.4, delay: Math.min(index, 8) * 0.05 }}
-      whileHover={{ y: -6 }}
-      className="card p-4 flex flex-col group"
-    >
-      <Link href={`/product/${product.id}`} className="block relative rounded-xl overflow-hidden h-40 mb-4 bg-gradient-to-br from-bg3 to-bg2">
+    <div ref={cardRef} className="card p-4 flex flex-col will-change-transform">
+      <Link
+        href={`/product/${product.id}`}
+        className="block relative rounded-xl overflow-hidden h-40 mb-4 bg-gradient-to-br from-bg3 to-bg2"
+      >
         {product.tag && (
           <span
             className={`absolute top-2 left-2 z-10 text-[11px] font-bold uppercase px-2.5 py-1 rounded-full ${
@@ -40,11 +74,7 @@ export default function ProductCard({ product, index = 0 }) {
         )}
         {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={cover}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
+          <img ref={imgRef} src={cover} alt={product.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-cream/30">
             <ImageOff size={28} />
@@ -53,7 +83,10 @@ export default function ProductCard({ product, index = 0 }) {
       </Link>
 
       <div className="text-xs text-cream/50 font-semibold uppercase tracking-wide mb-1">{product.category}</div>
-      <Link href={`/product/${product.id}`} className="font-bold text-white leading-snug mb-2 hover:text-orange2 transition-colors">
+      <Link
+        href={`/product/${product.id}`}
+        className="font-bold text-white leading-snug mb-2 hover:text-orange2 transition-colors"
+      >
         {product.name}
       </Link>
 
@@ -74,6 +107,6 @@ export default function ProductCard({ product, index = 0 }) {
         </button>
       </div>
       {product.stock <= 0 && <div className="text-xs text-bad mt-2 font-semibold">Немає в наявності</div>}
-    </motion.div>
+    </div>
   );
 }
