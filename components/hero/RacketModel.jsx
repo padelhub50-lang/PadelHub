@@ -11,11 +11,12 @@ import * as THREE from "three";
 // bottom is.
 function buildHeadShape(scale = 1) {
   const shape = new THREE.Shape();
+  const squash = 0.85; // flattens the head top-to-bottom without narrowing it
   const w = 1.15 * scale;
   const topW = 0.62 * scale;
-  const topY = 1.55 * scale;
-  const wideY = 0.55 * scale;
-  const bottomY = -1.45 * scale;
+  const topY = 1.55 * scale * squash;
+  const wideY = 0.55 * scale * squash;
+  const bottomY = -1.45 * scale * squash;
 
   shape.moveTo(-topW, topY);
   shape.quadraticCurveTo(0, topY * 1.08, topW, topY);
@@ -161,7 +162,7 @@ export default function RacketModel({ reduceMotion }) {
   });
 
   return (
-    <group ref={group} rotation={[0.15, 0.6, 0]} position={[0, 0.15, 0]} scale={0.92}>
+    <group ref={group} rotation={[0.15, 0.6, 0]} position={[0, 0.5, 0]} scale={1.15}>
       {/* Bumper (protective rubber edge) sits behind, slightly larger. */}
       <mesh geometry={bumperGeometry} castShadow receiveShadow>
         <meshStandardMaterial color="#141416" roughness={0.65} metalness={0.1} />
@@ -177,16 +178,16 @@ export default function RacketModel({ reduceMotion }) {
         />
       </mesh>
 
-      <mesh geometry={throatGeometry} position={[0, -1.68, 0]} scale={[1, 1, 0.55]} castShadow>
+      <mesh geometry={throatGeometry} position={[0, -1.455, 0]} scale={[1, 1, 0.55]} castShadow>
         <meshStandardMaterial color="#141416" roughness={0.6} metalness={0.1} />
       </mesh>
 
-      <mesh geometry={handleGeometry} position={[0, -2.5, 0]} castShadow>
+      <mesh geometry={handleGeometry} position={[0, -2.275, 0]} castShadow>
         <meshStandardMaterial map={gripTexture} roughness={0.85} metalness={0} />
       </mesh>
 
       {/* Wrist-strap loop at the very end of the grip, not the throat. */}
-      <mesh position={[0, -3.18, 0.08]} rotation={[Math.PI / 2.4, 0, 0]}>
+      <mesh position={[0, -2.955, 0.08]} rotation={[Math.PI / 2.4, 0, 0]}>
         <torusGeometry args={[0.1, 0.022, 8, 20]} />
         <meshStandardMaterial color="#FF8A3D" roughness={0.4} metalness={0.3} />
       </mesh>
