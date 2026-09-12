@@ -5,21 +5,24 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 // Real padel heads come in three families (round, teardrop, diamond); the
-// diamond/teardrop shape is the most common — a rounded top, widest in the
-// upper third, then a long sweeping taper down to a fairly pointed bottom
-// that meets the throat, rather than a soft round base.
+// diamond/teardrop shape is the most common — a wide, rounded (near-flat)
+// dome across the top, then a long sweeping taper down to a fairly pointed
+// bottom that meets the throat. The top is NOT a sharp point — only the
+// bottom is.
 function buildHeadShape(scale = 1) {
   const shape = new THREE.Shape();
   const w = 1.15 * scale;
+  const topW = 0.62 * scale;
   const topY = 1.55 * scale;
   const wideY = 0.55 * scale;
   const bottomY = -1.45 * scale;
 
-  shape.moveTo(0, topY);
-  shape.quadraticCurveTo(w * 1.05, topY * 0.7, w, wideY);
+  shape.moveTo(-topW, topY);
+  shape.quadraticCurveTo(0, topY * 1.08, topW, topY);
+  shape.quadraticCurveTo(w * 1.05, topY * 0.6, w, wideY);
   shape.quadraticCurveTo(w * 0.82, bottomY * 0.2, 0, bottomY);
   shape.quadraticCurveTo(-w * 0.82, bottomY * 0.2, -w, wideY);
-  shape.quadraticCurveTo(-w * 1.05, topY * 0.7, 0, topY);
+  shape.quadraticCurveTo(-w * 1.05, topY * 0.6, -topW, topY);
   return shape;
 }
 
