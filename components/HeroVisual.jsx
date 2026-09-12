@@ -4,16 +4,16 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
-// Abstract animated centerpiece for the hero — several distinct motion
-// types layered together (float, pulse, orbit, particle drift) instead of
-// a single literal object, so it reads as energetic without needing to be
-// a pixel-accurate model of anything.
-const PARTICLES = Array.from({ length: 14 }, (_, i) => ({
+// Second hero animation: slow morphing aurora blobs, a sweeping light beam
+// and gently pulsing bokeh dots — a calmer layered look, replacing the
+// earlier orbit-ring / particle-rise system.
+const BOKEH = Array.from({ length: 10 }, (_, i) => ({
   id: i,
-  left: 8 + ((i * 37) % 84),
-  delay: (i % 7) * 0.6,
-  duration: 5 + (i % 5),
-  size: 3 + (i % 3) * 2,
+  top: 10 + ((i * 53) % 80),
+  left: 6 + ((i * 31) % 88),
+  size: 4 + (i % 4) * 3,
+  delay: (i % 5) * 0.5,
+  dur: 2.6 + (i % 4) * 0.4,
 }));
 
 export default function HeroVisual() {
@@ -23,36 +23,54 @@ export default function HeroVisual() {
     () => {
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        gsap.to("[data-orb='a']", { y: -22, x: 10, duration: 4.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
-        gsap.to("[data-orb='b']", { y: 18, x: -14, duration: 5.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
-        gsap.to("[data-orb='c']", { y: -14, x: -8, duration: 3.8, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        gsap.to("[data-blob='a']", {
+          x: 60,
+          y: -40,
+          scale: 1.15,
+          borderRadius: "42% 58% 65% 35% / 45% 40% 60% 55%",
+          duration: 9,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
+        gsap.to("[data-blob='b']", {
+          x: -50,
+          y: 30,
+          scale: 0.9,
+          borderRadius: "60% 40% 35% 65% / 55% 65% 35% 45%",
+          duration: 11,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
+        gsap.to("[data-blob='c']", {
+          x: 30,
+          y: 50,
+          scale: 1.1,
+          borderRadius: "50% 50% 40% 60% / 60% 45% 55% 40%",
+          duration: 7.5,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+        });
 
-        gsap.to("[data-ring]", { rotate: 360, duration: 26, ease: "none", repeat: -1 });
-        gsap.to("[data-ring-dot]", { rotate: -360, duration: 10, ease: "none", repeat: -1, transformOrigin: "0 90px" });
+        gsap.to("[data-sweep]", {
+          xPercent: 260,
+          duration: 4.5,
+          ease: "power1.inOut",
+          repeat: -1,
+          repeatDelay: 2.4,
+        });
 
-        gsap.to("[data-pulse]", { scale: 1.12, opacity: 0.55, duration: 2.2, ease: "sine.inOut", yoyo: true, repeat: -1 });
-
-        gsap.utils.toArray("[data-particle]").forEach((el, i) => {
-          gsap.fromTo(
-            el,
-            { y: 40, opacity: 0 },
-            {
-              y: -220,
-              opacity: 1,
-              duration: PARTICLES[i].duration,
-              delay: PARTICLES[i].delay,
-              ease: "power1.out",
-              repeat: -1,
-              repeatDelay: 0.4,
-              onRepeat: () => gsap.set(el, { opacity: 0 }),
-            }
-          );
+        gsap.utils.toArray("[data-bokeh]").forEach((el, i) => {
           gsap.to(el, {
-            opacity: 0,
-            duration: 1,
-            delay: PARTICLES[i].delay + PARTICLES[i].duration * 0.7,
+            opacity: 0.9,
+            scale: 1.5,
+            duration: BOKEH[i].dur,
+            delay: BOKEH[i].delay,
+            ease: "sine.inOut",
+            yoyo: true,
             repeat: -1,
-            repeatDelay: PARTICLES[i].duration - 1 + 0.4,
           });
         });
       });
@@ -62,40 +80,34 @@ export default function HeroVisual() {
   );
 
   return (
-    <div ref={root} className="relative w-full h-full flex items-center justify-center overflow-hidden">
-      {/* pulsing glow core */}
+    <div ref={root} className="relative w-full h-full overflow-hidden">
+      {/* morphing gradient blobs */}
       <div
-        data-pulse
-        className="absolute w-52 h-52 md:w-64 md:h-64 rounded-full bg-[radial-gradient(circle,rgba(255,138,61,0.45),transparent_70%)] blur-xl"
+        data-blob="a"
+        className="absolute top-1/4 left-1/4 w-72 h-72 md:w-96 md:h-96 rounded-full bg-gradient-to-br from-orange/50 to-rust/40 blur-3xl"
+      />
+      <div
+        data-blob="b"
+        className="absolute bottom-0 right-1/4 w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-br from-gold/45 to-orange2/35 blur-3xl"
+      />
+      <div
+        data-blob="c"
+        className="absolute top-1/3 right-1/5 w-52 h-52 md:w-64 md:h-64 rounded-full bg-gradient-to-br from-orange2/40 to-gold/30 blur-2xl"
       />
 
-      {/* rotating dashed orbit ring */}
-      <svg data-ring className="absolute w-72 h-72 md:w-96 md:h-96" viewBox="0 0 200 200" fill="none">
-        <circle cx="100" cy="100" r="90" stroke="#FF8A3D" strokeOpacity="0.35" strokeWidth="1.5" strokeDasharray="4 10" />
-      </svg>
-      <div data-ring-dot className="absolute w-3.5 h-3.5 rounded-full bg-gold shadow-[0_0_16px_4px_rgba(255,184,77,0.6)]" />
-
-      {/* floating gradient orbs */}
+      {/* diagonal light sweep */}
       <div
-        data-orb="a"
-        className="absolute top-1/4 left-1/3 w-24 h-24 rounded-full bg-gradient-to-br from-orange to-rust opacity-80 blur-[2px]"
-      />
-      <div
-        data-orb="b"
-        className="absolute bottom-1/4 right-1/3 w-16 h-16 rounded-full bg-gradient-to-br from-gold to-orange2 opacity-70 blur-[1px]"
-      />
-      <div
-        data-orb="c"
-        className="absolute top-1/2 right-1/4 w-9 h-9 rounded-full bg-white/80 blur-[1px]"
+        data-sweep
+        className="absolute -left-1/2 top-0 h-full w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent"
       />
 
-      {/* drifting particles */}
-      {PARTICLES.map((p) => (
+      {/* pulsing bokeh dots */}
+      {BOKEH.map((b) => (
         <span
-          key={p.id}
-          data-particle
-          className="absolute bottom-6 rounded-full bg-gold/80"
-          style={{ left: `${p.left}%`, width: p.size, height: p.size }}
+          key={b.id}
+          data-bokeh
+          className="absolute rounded-full bg-gold/70 opacity-40"
+          style={{ top: `${b.top}%`, left: `${b.left}%`, width: b.size, height: b.size }}
         />
       ))}
     </div>

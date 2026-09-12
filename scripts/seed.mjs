@@ -1,9 +1,9 @@
 import { listProducts, createProduct } from "../lib/db.js";
 
 const CATALOG = [
-  { name: "Bullpadel Vertex 04", category: "Ракетки", price: 8990, oldPrice: 10490, tag: "Хіт", stock: 7, description: "Ракетка топового рівня, форма — сльоза. Контроль + потужність для агресивної гри." },
-  { name: "Head Delta Pro", category: "Ракетки", price: 7490, tag: "Новинка", stock: 12, description: "Кругла форма для максимального контролю. Легка й маневрена." },
-  { name: "Babolat Technical Viper", category: "Ракетки", price: 6290, oldPrice: 7290, tag: "Знижка", stock: 5, description: "Універсальна ракетка для гравців середнього рівня." },
+  { name: "Bullpadel Vertex 04", category: "Ракетки", price: 8990, oldPrice: 10490, tag: "Хіт", stock: 7, description: "Ракетка топового рівня, форма — сльоза. Контроль + потужність для агресивної гри.", stats: { attack: 9, defense: 5, control: 7, versatility: 5 } },
+  { name: "Head Delta Pro", category: "Ракетки", price: 7490, tag: "Новинка", stock: 12, description: "Кругла форма для максимального контролю. Легка й маневрена.", stats: { attack: 4, defense: 8, control: 8, versatility: 7 } },
+  { name: "Babolat Technical Viper", category: "Ракетки", price: 6290, oldPrice: 7290, tag: "Знижка", stock: 5, description: "Універсальна ракетка для гравців середнього рівня.", stats: { attack: 6, defense: 6, control: 6, versatility: 9 } },
   { name: "Adidas Padel Balls (3 шт)", category: "М'ячі", price: 320, stock: 40, description: "Офіційні м'ячі для тренувань та турнірів." },
   { name: "Head Padel Pro S", category: "М'ячі", price: 360, tag: "Хіт", stock: 33, description: "Тур-рівень, підвищена довговічність покриття." },
   { name: "Bullpadel Vertex Backpack", category: "Сумки", price: 2890, stock: 9, description: "Рюкзак на 2 ракетки з термо-відділенням." },

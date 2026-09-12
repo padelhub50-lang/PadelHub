@@ -6,6 +6,7 @@ import StatementSection from "../components/StatementSection.jsx";
 import BrandMarquee from "../components/BrandMarquee.jsx";
 import ProductGrid from "../components/ProductGrid.jsx";
 import WhySection from "../components/WhySection.jsx";
+import RacketQuiz from "../components/RacketQuiz.jsx";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +21,7 @@ export default function HomePage() {
         <Hero site={settings.site} />
         <StatementSection />
         <BrandMarquee />
+        <RacketQuiz products={products} />
         <ProductGrid products={products} />
         <WhySection />
       </main>

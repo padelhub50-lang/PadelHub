@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronLeft, Save, Loader2 } from "lucide-react";
 import ImageUploader from "../../../../../components/ImageUploader.jsx";
+import { STAT_FIELDS } from "../../../../../lib/racketStats.js";
 
 const DEFAULT_CATEGORIES = ["Ракетки", "М'ячі", "Сумки", "Взуття", "Одяг", "Аксесуари"];
 const TAGS = ["", "Хіт", "Новинка", "Знижка"];
@@ -19,6 +20,7 @@ const EMPTY = {
   description: "",
   images: [],
   active: true,
+  stats: { attack: 5, defense: 5, control: 5, versatility: 5 },
 };
 
 export default function ProductEditorPage() {
@@ -146,6 +148,33 @@ export default function ProductEditorPage() {
         <div>
           <label className="label">Опис</label>
           <textarea className="input min-h-[110px]" value={form.description} onChange={update("description")} />
+        </div>
+
+        <div>
+          <label className="label">Показники ракетки (1–10)</label>
+          <div className="grid sm:grid-cols-2 gap-4 mt-2">
+            {STAT_FIELDS.map((f) => (
+              <div key={f.key}>
+                <div className="flex items-center justify-between text-xs text-cream/60 mb-1">
+                  <span>{f.label}</span>
+                  <span className="font-bold text-white">{form.stats?.[f.key] ?? 5}</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={form.stats?.[f.key] ?? 5}
+                  onChange={(e) =>
+                    setForm((f2) => ({ ...f2, stats: { ...f2.stats, [f.key]: Number(e.target.value) } }))
+                  }
+                  className="w-full accent-orange"
+                />
+              </div>
+            ))}
+          </div>
+          <p className="text-[11px] text-cream/40 mt-1.5">
+            Використовується у тесті підбору ракетки та на шкалах у картці й на сторінці товару.
+          </p>
         </div>
 
         <label className="flex items-center gap-2 text-sm text-cream/80">

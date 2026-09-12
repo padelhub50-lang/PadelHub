@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ShoppingBag, ImageOff } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
+import RacketStatBars from "./RacketStatBars.jsx";
 
 function money(n) {
   return `${Number(n || 0).toLocaleString("uk-UA")} грн`;
@@ -89,6 +90,8 @@ export default function ProductCard({ product }) {
       >
         {product.name}
       </Link>
+
+      <RacketStatBars stats={product.stats} compact />
 
       <div className="mt-auto flex items-center justify-between pt-2">
         <div className="flex items-baseline gap-2">
