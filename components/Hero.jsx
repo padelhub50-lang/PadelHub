@@ -1,15 +1,13 @@
 "use client";
 
 import { useRef } from "react";
-import dynamic from "next/dynamic";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { Sparkles, ArrowRight, Truck } from "lucide-react";
+import HeroVisual from "./HeroVisual.jsx";
 
 gsap.registerPlugin(SplitText);
-
-const RacketScene = dynamic(() => import("./hero/RacketScene.jsx"), { ssr: false });
 
 export default function Hero({ site }) {
   const root = useRef(null);
@@ -116,7 +114,7 @@ export default function Hero({ site }) {
           className="order-1 md:order-2 relative h-[340px] md:h-[480px]"
         >
           <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_50%_45%,rgba(255,138,61,0.18),transparent_70%)]" />
-          <RacketScene />
+          <HeroVisual />
         </div>
       </div>
     </section>
