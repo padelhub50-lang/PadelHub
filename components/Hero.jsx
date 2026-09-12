@@ -1,31 +1,32 @@
 "use client";
 
 import { useRef } from "react";
+import dynamic from "next/dynamic";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sparkles, ArrowRight, Truck } from "lucide-react";
 
-gsap.registerPlugin(SplitText, ScrollTrigger);
+gsap.registerPlugin(SplitText);
+
+const RacketScene = dynamic(() => import("./hero/RacketScene.jsx"), { ssr: false });
 
 export default function Hero({ site }) {
   const root = useRef(null);
   const ctaRef = useRef(null);
-  const blobRef = useRef(null);
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia();
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
-
         const split = new SplitText(root.current.querySelector("[data-hero-title]"), {
           type: "chars,words",
         });
 
-        tl.from(root.current.querySelector("[data-hero-badge]"), { opacity: 0, y: 14, duration: 0.5 })
+        gsap
+          .timeline({ defaults: { ease: "expo.out" } })
+          .from(root.current.querySelector("[data-hero-badge]"), { opacity: 0, y: 14, duration: 0.5 })
           .from(
             split.chars,
             { opacity: 0, y: 24, rotateX: -40, duration: 0.6, stagger: 0.015, ease: "expo.out" },
@@ -40,17 +41,9 @@ export default function Hero({ site }) {
             root.current.querySelectorAll("[data-hero-cta] > *"),
             { opacity: 0, y: 16, duration: 0.5, stagger: 0.08 },
             "-=0.3"
-          );
+          )
+          .from(root.current.querySelector("[data-hero-visual]"), { opacity: 0, scale: 0.9, duration: 0.8 }, "-=0.5");
 
-        // Slow ambient parallax drift on the glow blob — decorative layer only.
-        gsap.to(blobRef.current, {
-          yPercent: 12,
-          xPercent: -6,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-        });
-
-        // Magnetic pull on the primary CTA.
         const cta = ctaRef.current;
         if (cta) {
           const xTo = gsap.quickTo(cta, "x", { duration: 0.4, ease: "power3" });
@@ -66,10 +59,6 @@ export default function Hero({ site }) {
           };
           cta.addEventListener("pointermove", onMove);
           cta.addEventListener("pointerleave", onLeave);
-          return () => {
-            cta.removeEventListener("pointermove", onMove);
-            cta.removeEventListener("pointerleave", onLeave);
-          };
         }
 
         return () => split.revert();
@@ -83,42 +72,51 @@ export default function Hero({ site }) {
   return (
     <section
       ref={root}
-      className="relative px-5 md:px-7 pt-16 md:pt-24 pb-20 overflow-hidden bg-gradient-to-br from-[#181310] via-[#221208] to-[#3A1305]"
+      className="relative overflow-hidden bg-gradient-to-br from-[#181310] via-[#221208] to-[#3A1305]"
     >
-      <div
-        ref={blobRef}
-        className="pointer-events-none absolute -top-20 right-[-10%] w-[520px] h-[520px] rounded-full bg-[radial-gradient(circle,rgba(255,138,61,0.16),transparent_70%)]"
-      />
-      <div className="max-w-7xl mx-auto relative z-10 text-center flex flex-col items-center">
-        <div
-          data-hero-badge
-          className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide bg-gold/10 border border-gold/25 text-gold px-4 py-1.5 rounded-full mb-6"
-        >
-          <Sparkles size={14} /> Офіційний екіпірувальник падел-гравців
+      <div className="max-w-7xl mx-auto px-5 md:px-7 pt-16 md:pt-20 pb-10 grid md:grid-cols-2 gap-8 items-center">
+        <div className="text-center md:text-left order-2 md:order-1">
+          <div
+            data-hero-badge
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide bg-gold/10 border border-gold/25 text-gold px-4 py-1.5 rounded-full mb-6"
+          >
+            <Sparkles size={14} /> Офіційний екіпірувальник падел-гравців
+          </div>
+
+          <h1
+            data-hero-title
+            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight [perspective:600px]"
+          >
+            {site?.heroTitle}
+          </h1>
+
+          <p data-hero-subtitle className="mt-5 text-cream/70 text-base md:text-lg max-w-xl mx-auto md:mx-0">
+            {site?.heroSubtitle}
+          </p>
+
+          <div
+            data-hero-cta
+            className="mt-8 flex flex-wrap items-center justify-center md:justify-start gap-3"
+          >
+            <a
+              ref={ctaRef}
+              href="#catalog"
+              className="btn-primary px-7 py-3.5 inline-flex items-center gap-2 will-change-transform"
+            >
+              Обрати спорядження <ArrowRight size={17} />
+            </a>
+            <span className="inline-flex items-center gap-2 text-sm text-cream/60 px-4 py-3.5">
+              <Truck size={16} /> Доставка по всій Україні
+            </span>
+          </div>
         </div>
 
-        <h1
-          data-hero-title
-          className="text-4xl md:text-6xl font-extrabold text-white leading-tight max-w-3xl [perspective:600px]"
+        <div
+          data-hero-visual
+          className="order-1 md:order-2 relative h-[340px] md:h-[480px]"
         >
-          {site?.heroTitle}
-        </h1>
-
-        <p data-hero-subtitle className="mt-5 text-cream/70 text-base md:text-lg max-w-xl">
-          {site?.heroSubtitle}
-        </p>
-
-        <div data-hero-cta className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a
-            ref={ctaRef}
-            href="#catalog"
-            className="btn-primary px-7 py-3.5 inline-flex items-center gap-2 will-change-transform"
-          >
-            Обрати спорядження <ArrowRight size={17} />
-          </a>
-          <span className="inline-flex items-center gap-2 text-sm text-cream/60 px-4 py-3.5">
-            <Truck size={16} /> Доставка по всій Україні
-          </span>
+          <div className="absolute inset-0 rounded-[32px] bg-[radial-gradient(circle_at_50%_45%,rgba(255,138,61,0.18),transparent_70%)]" />
+          <RacketScene />
         </div>
       </div>
     </section>
