@@ -65,7 +65,7 @@ export default function ProductCard({ product }) {
     <div ref={cardRef} className="card p-4 flex flex-col will-change-transform">
       <Link
         href={`/product/${product.id}`}
-        className="block relative rounded-xl overflow-hidden h-40 mb-4 bg-gradient-to-br from-bg3 to-bg2"
+        className="block relative rounded-xl overflow-hidden aspect-[3/4] mb-4 bg-gradient-to-br from-bg3 to-bg2"
       >
         {product.tag && (
           <span
