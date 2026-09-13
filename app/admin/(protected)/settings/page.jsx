@@ -249,22 +249,36 @@ function SaveButton({ onClick, saving, saved }) {
   );
 }
 
+const MAIL_REASONS = {
+  smtp_not_configured: "Заповніть хост, логін і пароль перед тестом.",
+  email_disabled: "Спочатку увімкніть та збережіть надсилання листів.",
+};
+
 function TestEmailButton() {
   const [state, setState] = useState("idle");
+  const [detail, setDetail] = useState("");
 
   const test = async () => {
     setState("loading");
+    setDetail("");
     const res = await fetch("/api/mailer/test", { method: "POST" });
     const data = await res.json();
     setState(data.sent ? "sent" : "error");
-    setTimeout(() => setState("idle"), 2500);
+    if (data.sent) {
+      setTimeout(() => setState("idle"), 2500);
+    } else {
+      setDetail(MAIL_REASONS[data.reason] || data.error || "Невідома помилка");
+    }
   };
 
   return (
-    <button onClick={test} disabled={state === "loading"} className="btn-ghost px-5 py-2.5 flex items-center gap-2 text-sm">
-      {state === "loading" ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
-      {state === "sent" ? "Лист надіслано!" : state === "error" ? "Помилка надсилання" : "Надіслати тест"}
-    </button>
+    <div>
+      <button onClick={test} disabled={state === "loading"} className="btn-ghost px-5 py-2.5 flex items-center gap-2 text-sm">
+        {state === "loading" ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
+        {state === "sent" ? "Лист надіслано!" : state === "error" ? "Помилка надсилання" : "Надіслати тест"}
+      </button>
+      {state === "error" && detail && <p className="text-xs text-bad mt-2 max-w-md break-words">{detail}</p>}
+    </div>
   );
 }
 
