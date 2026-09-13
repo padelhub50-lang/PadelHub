@@ -5,18 +5,20 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Truck, ShieldCheck, Star, Wallet } from "lucide-react";
+import { useLang } from "../context/LanguageContext.jsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const ITEMS = [
-  { icon: Truck, title: "Швидка доставка", text: "Відправляємо замовлення протягом 1 дня Новою поштою по всій Україні." },
-  { icon: ShieldCheck, title: "Тільки оригінал", text: "Працюємо напряму з брендами — жодних підробок чи сірого імпорту." },
-  { icon: Star, title: "Перевірений вибір", text: "У каталозі — тільки спорядження, перевірене нашими інструкторами та гравцями." },
-  { icon: Wallet, title: "Зручна оплата", text: "Оплата карткою онлайн або при отриманні — обирайте, як зручно." },
-];
-
 export default function WhySection() {
   const root = useRef(null);
+  const { t } = useLang();
+
+  const ITEMS = [
+    { icon: Truck, title: t("why.1.title"), text: t("why.1.text") },
+    { icon: ShieldCheck, title: t("why.2.title"), text: t("why.2.text") },
+    { icon: Star, title: t("why.3.title"), text: t("why.3.text") },
+    { icon: Wallet, title: t("why.4.title"), text: t("why.4.text") },
+  ];
 
   useGSAP(
     () => {
@@ -50,7 +52,7 @@ export default function WhySection() {
 
   return (
     <section id="why" ref={root} className="max-w-7xl mx-auto px-5 md:px-7 py-16">
-      <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-8">Чому обирають Padel Hub</h2>
+      <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-8">{t("why.title")}</h2>
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {ITEMS.map((it) => (
           <div

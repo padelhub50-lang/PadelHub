@@ -6,47 +6,48 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Wand2, RotateCcw, ShoppingBag, ImageOff, X } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
 import RacketStatBars from "./RacketStatBars.jsx";
 
-const QUESTIONS = [
+const QUESTION_KEYS = [
   {
-    question: "Як ти найчастіше граєш на корті?",
+    question: "quiz.q1",
     options: [
-      { label: "Атакую та йду до сітки", weights: { attack: 3, control: 1 } },
-      { label: "Тримаюсь задньої лінії, вичікую", weights: { defense: 3, control: 1 } },
-      { label: "Граю збалансовано, підлаштовуюсь під суперника", weights: { versatility: 3 } },
+      { key: "quiz.q1.a", weights: { attack: 3, control: 1 } },
+      { key: "quiz.q1.b", weights: { defense: 3, control: 1 } },
+      { key: "quiz.q1.c", weights: { versatility: 3 } },
     ],
   },
   {
-    question: "Що для тебе важливіше в грі?",
+    question: "quiz.q2",
     options: [
-      { label: "Потужність та сила ударів", weights: { attack: 3 } },
-      { label: "Точність і контроль м'яча", weights: { control: 3 } },
-      { label: "Стабільність в оборонних розіграшах", weights: { defense: 3 } },
+      { key: "quiz.q2.a", weights: { attack: 3 } },
+      { key: "quiz.q2.b", weights: { control: 3 } },
+      { key: "quiz.q2.c", weights: { defense: 3 } },
     ],
   },
   {
-    question: "Який у тебе рівень гри?",
+    question: "quiz.q3",
     options: [
-      { label: "Новачок, тільки починаю", weights: { control: 2, versatility: 2 } },
-      { label: "Середній рівень", weights: { versatility: 2, control: 1, attack: 1 } },
-      { label: "Просунутий або турнірний", weights: { attack: 2, control: 2 } },
+      { key: "quiz.q3.a", weights: { control: 2, versatility: 2 } },
+      { key: "quiz.q3.b", weights: { versatility: 2, control: 1, attack: 1 } },
+      { key: "quiz.q3.c", weights: { attack: 2, control: 2 } },
     ],
   },
   {
-    question: "Що найчастіше підводить у твоїй грі?",
+    question: "quiz.q4",
     options: [
-      { label: "Не вистачає сили в завершальних ударах", weights: { attack: 2 } },
-      { label: "Важко стабільно захищатись від смешів", weights: { defense: 2 } },
-      { label: "Помиляюсь з контролем траєкторії", weights: { control: 2 } },
+      { key: "quiz.q4.a", weights: { attack: 2 } },
+      { key: "quiz.q4.b", weights: { defense: 2 } },
+      { key: "quiz.q4.c", weights: { control: 2 } },
     ],
   },
   {
-    question: "Яку ракетку ти шукаєш за вагою та маневреністю?",
+    question: "quiz.q5",
     options: [
-      { label: "Легку і маневрену для швидкої гри", weights: { versatility: 2, control: 1 } },
-      { label: "Важчу й потужнішу для сильних ударів", weights: { attack: 2 } },
-      { label: "Збалансовану під будь-яку ситуацію", weights: { versatility: 2, defense: 1 } },
+      { key: "quiz.q5.a", weights: { versatility: 2, control: 1 } },
+      { key: "quiz.q5.b", weights: { attack: 2 } },
+      { key: "quiz.q5.c", weights: { versatility: 2, defense: 1 } },
     ],
   },
 ];
@@ -70,6 +71,12 @@ function pickTopRackets(rackets, totals, count) {
 }
 
 export default function RacketQuiz({ products }) {
+  const { t } = useLang();
+  const QUESTIONS = QUESTION_KEYS.map((q) => ({
+    question: t(q.question),
+    options: q.options.map((o) => ({ label: t(o.key), weights: o.weights })),
+  }));
+
   const rackets = useMemo(
     () => products.filter((p) => p.category === "Ракетки" && p.stats && Object.keys(p.stats).length > 0),
     [products]
@@ -137,12 +144,12 @@ export default function RacketQuiz({ products }) {
         >
           <div className="flex items-center justify-between mb-4">
             <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide bg-gold/10 border border-gold/25 text-gold px-3 py-1 rounded-full">
-              <Wand2 size={13} /> Підбір ракетки
+              <Wand2 size={13} /> {t("quiz.fabLabel")}
             </div>
             <button
               onClick={() => setOpen(false)}
               className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-cream/60 hover:text-white"
-              aria-label="Закрити"
+              aria-label={t("common.close")}
             >
               <X size={14} />
             </button>
@@ -175,7 +182,7 @@ export default function RacketQuiz({ products }) {
             ) : (
               <>
                 <div className="text-xs text-cream/50 font-semibold uppercase tracking-wide mb-3">
-                  Тобі підійдуть ці ракетки
+                  {t("quiz.results")}
                 </div>
                 <div className="flex flex-col gap-3">
                   {results.map((product, i) => (
@@ -195,7 +202,7 @@ export default function RacketQuiz({ products }) {
                         <div className="flex items-center gap-1.5">
                           {i === 0 && (
                             <span className="text-[9px] font-bold uppercase text-good bg-good/15 px-1.5 py-0.5 rounded-full shrink-0">
-                              Найкращий збіг
+                              {t("quiz.bestMatch")}
                             </span>
                           )}
                         </div>
@@ -211,7 +218,7 @@ export default function RacketQuiz({ products }) {
                           <button
                             onClick={() => addItem(product, 1)}
                             className="btn-primary w-8 h-8 flex items-center justify-center shrink-0"
-                            aria-label="Додати в кошик"
+                            aria-label={t("catalog.addToCart")}
                           >
                             <ShoppingBag size={13} />
                           </button>
@@ -224,7 +231,7 @@ export default function RacketQuiz({ products }) {
                   onClick={reset}
                   className="btn-ghost w-full mt-4 px-4 py-2.5 inline-flex items-center justify-center gap-2 text-sm font-semibold"
                 >
-                  <RotateCcw size={14} /> Пройти ще раз
+                  <RotateCcw size={14} /> {t("quiz.retry")}
                 </button>
               </>
             )}
@@ -237,7 +244,7 @@ export default function RacketQuiz({ products }) {
         className="fixed z-40 bottom-5 right-4 sm:right-5 btn-primary px-4 py-3.5 inline-flex items-center gap-2 text-sm"
       >
         {open ? <X size={16} /> : <Wand2 size={16} />}
-        <span className="hidden sm:inline">Підбір ракетки</span>
+        <span className="hidden sm:inline">{t("quiz.fabLabel")}</span>
       </button>
     </>
   );

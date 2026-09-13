@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
 
 function money(n) {
   return `${Number(n || 0).toLocaleString("uk-UA")} грн`;
@@ -11,6 +12,7 @@ function money(n) {
 
 export default function CartDrawer() {
   const { items, drawerOpen, setDrawerOpen, updateQty, removeItem, totalPrice } = useCart();
+  const { t } = useLang();
 
   return (
     <AnimatePresence>
@@ -32,7 +34,7 @@ export default function CartDrawer() {
           >
             <div className="flex items-center justify-between px-5 h-16 border-b border-line shrink-0">
               <h3 className="font-extrabold text-white flex items-center gap-2">
-                <ShoppingBag size={18} /> Кошик
+                <ShoppingBag size={18} /> {t("cart.title")}
               </h3>
               <button onClick={() => setDrawerOpen(false)} className="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-white">
                 <X size={16} />
@@ -41,7 +43,7 @@ export default function CartDrawer() {
 
             <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
               {items.length === 0 ? (
-                <p className="text-cream/50 text-sm text-center mt-10">Кошик порожній</p>
+                <p className="text-cream/50 text-sm text-center mt-10">{t("cart.empty")}</p>
               ) : (
                 items.map((it) => (
                   <div key={it.productId} className="flex gap-3 card p-3">
@@ -84,7 +86,7 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <div className="p-5 border-t border-line shrink-0">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-cream/70 text-sm">Разом</span>
+                  <span className="text-cream/70 text-sm">{t("cart.total")}</span>
                   <span className="text-xl font-extrabold text-white">{money(totalPrice)}</span>
                 </div>
                 <Link
@@ -92,7 +94,7 @@ export default function CartDrawer() {
                   onClick={() => setDrawerOpen(false)}
                   className="btn-primary w-full py-3.5 flex items-center justify-center"
                 >
-                  Оформити замовлення
+                  {t("cart.checkout")}
                 </Link>
               </div>
             )}

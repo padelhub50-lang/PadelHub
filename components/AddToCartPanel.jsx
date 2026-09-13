@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Minus, Plus, ShoppingBag, Check } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
 
 function money(n) {
   return `${Number(n || 0).toLocaleString("uk-UA")} грн`;
@@ -11,6 +12,7 @@ function money(n) {
 
 export default function AddToCartPanel({ product }) {
   const { addItem } = useCart();
+  const { t } = useLang();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -29,7 +31,7 @@ export default function AddToCartPanel({ product }) {
         ) : null}
       </div>
       <p className={`text-sm font-semibold mb-6 ${product.stock > 0 ? "text-good" : "text-bad"}`}>
-        {product.stock > 0 ? `В наявності: ${product.stock} шт.` : "Немає в наявності"}
+        {product.stock > 0 ? `${t("product.inStock")}: ${product.stock} ${t("product.pcs")}` : t("product.outOfStock")}
       </p>
 
       <div className="flex items-center gap-4">
@@ -50,11 +52,11 @@ export default function AddToCartPanel({ product }) {
         >
           {added ? (
             <>
-              <Check size={18} /> Додано
+              <Check size={18} /> {t("product.added")}
             </>
           ) : (
             <>
-              <ShoppingBag size={18} /> Додати в кошик
+              <ShoppingBag size={18} /> {t("product.addToCart")}
             </>
           )}
         </motion.button>

@@ -5,15 +5,17 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
 
 export default function Header() {
   const { totalCount, setDrawerOpen } = useCart();
+  const { lang, setLang, t } = useLang();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const links = [
-    { href: "/#catalog", label: "Каталог" },
-    { href: "/#why", label: "Чому ми" },
-    { href: "/#contacts", label: "Контакти" },
+    { href: "/#catalog", label: t("nav.catalog") },
+    { href: "/#why", label: t("nav.why") },
+    { href: "/#contacts", label: t("nav.contacts") },
   ];
 
   return (
@@ -41,10 +43,32 @@ export default function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <div
+            role="group"
+            aria-label={t("nav.lang")}
+            className="hidden sm:flex items-center bg-white/5 border border-line rounded-xl p-0.5 text-xs font-bold"
+          >
+            <button
+              onClick={() => setLang("uk")}
+              className={`px-2.5 py-1.5 rounded-lg transition-colors ${
+                lang === "uk" ? "bg-gradient-to-br from-orange to-rust text-white" : "text-cream/60 hover:text-white"
+              }`}
+            >
+              UA
+            </button>
+            <button
+              onClick={() => setLang("en")}
+              className={`px-2.5 py-1.5 rounded-lg transition-colors ${
+                lang === "en" ? "bg-gradient-to-br from-orange to-rust text-white" : "text-cream/60 hover:text-white"
+              }`}
+            >
+              EN
+            </button>
+          </div>
           <button
             onClick={() => setDrawerOpen(true)}
             className="relative w-10 h-10 rounded-xl bg-white/5 border border-line flex items-center justify-center text-white hover:bg-gradient-to-br hover:from-orange hover:to-rust transition-all"
-            aria-label="Кошик"
+            aria-label={t("nav.cart")}
           >
             <ShoppingBag size={18} />
             {totalCount > 0 && (
@@ -61,7 +85,7 @@ export default function Header() {
           <button
             className="md:hidden w-10 h-10 rounded-xl bg-white/5 border border-line flex items-center justify-center text-white"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Меню"
+            aria-label={t("nav.menu")}
           >
             {mobileOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -80,6 +104,24 @@ export default function Header() {
               {l.label}
             </a>
           ))}
+          <div className="flex items-center gap-2 px-2 pt-2 mt-1 border-t border-line">
+            <button
+              onClick={() => setLang("uk")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                lang === "uk" ? "bg-gradient-to-br from-orange to-rust text-white" : "bg-white/5 text-cream/60"
+              }`}
+            >
+              UA
+            </button>
+            <button
+              onClick={() => setLang("en")}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                lang === "en" ? "bg-gradient-to-br from-orange to-rust text-white" : "bg-white/5 text-cream/60"
+              }`}
+            >
+              EN
+            </button>
+          </div>
         </div>
       )}
     </header>

@@ -1,5 +1,6 @@
 import "./globals.css";
 import { CartProvider } from "../context/CartContext.jsx";
+import { LanguageProvider } from "../context/LanguageContext.jsx";
 import CartDrawer from "../components/CartDrawer.jsx";
 
 export const metadata = {
@@ -20,10 +21,12 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="font-sans antialiased">
-        <CartProvider>
-          {children}
-          <CartDrawer />
-        </CartProvider>
+        <LanguageProvider>
+          <CartProvider>
+            {children}
+            <CartDrawer />
+          </CartProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

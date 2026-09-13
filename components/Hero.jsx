@@ -6,12 +6,14 @@ import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { Sparkles, ArrowRight, Truck } from "lucide-react";
 import HeroVisual from "./HeroVisual.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
 
 gsap.registerPlugin(SplitText);
 
 export default function Hero({ site }) {
   const root = useRef(null);
   const ctaRef = useRef(null);
+  const { t } = useLang();
 
   useGSAP(
     () => {
@@ -84,7 +86,7 @@ export default function Hero({ site }) {
           data-hero-badge
           className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wide bg-gold/10 border border-gold/25 text-gold px-4 py-1.5 rounded-full mb-6"
         >
-          <Sparkles size={14} /> Офіційний екіпірувальник падел-гравців
+          <Sparkles size={14} /> {t("hero.badge")}
         </div>
 
         <h1
@@ -104,10 +106,10 @@ export default function Hero({ site }) {
             href="#catalog"
             className="btn-primary px-7 py-3.5 inline-flex items-center gap-2 will-change-transform"
           >
-            Обрати спорядження <ArrowRight size={17} />
+            {t("hero.cta")} <ArrowRight size={17} />
           </a>
           <span className="inline-flex items-center gap-2 text-sm text-cream/60 px-4 py-3.5">
-            <Truck size={16} /> Доставка по всій Україні
+            <Truck size={16} /> {t("hero.delivery")}
           </span>
         </div>
       </div>

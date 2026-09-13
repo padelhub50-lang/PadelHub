@@ -4,17 +4,22 @@ import { useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ProductCard from "./ProductCard.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
+import { translateCategory } from "../lib/i18n.js";
+
+const ALL = "__all__";
 
 export default function ProductGrid({ products }) {
+  const { t, lang } = useLang();
   const categories = useMemo(() => {
     const set = new Set(products.map((p) => p.category));
-    return ["Всі", ...Array.from(set)];
+    return [ALL, ...Array.from(set)];
   }, [products]);
 
-  const [active, setActive] = useState("Всі");
+  const [active, setActive] = useState(ALL);
   const gridRef = useRef(null);
 
-  const filtered = active === "Всі" ? products : products.filter((p) => p.category === active);
+  const filtered = active === ALL ? products : products.filter((p) => p.category === active);
 
   // Grid-aware "wave" reveal — replays on every category switch so filtering
   // itself reads as a deliberate action, not just a re-render.
@@ -40,7 +45,7 @@ export default function ProductGrid({ products }) {
   return (
     <section id="catalog" className="max-w-7xl mx-auto px-5 md:px-7 py-16">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-white">Каталог</h2>
+        <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("catalog.title")}</h2>
         <div className="flex flex-wrap gap-2">
           {categories.map((c) => (
             <button
@@ -48,14 +53,14 @@ export default function ProductGrid({ products }) {
               onClick={() => setActive(c)}
               className={`chip ${active === c ? "chip-active" : ""}`}
             >
-              {c}
+              {c === ALL ? t("catalog.all") : translateCategory(c, lang)}
             </button>
           ))}
         </div>
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-cream/50 text-center py-16">Товарів у цій категорії поки немає.</p>
+        <p className="text-cream/50 text-center py-16">{t("catalog.empty")}</p>
       ) : (
         <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {filtered.map((p) => (

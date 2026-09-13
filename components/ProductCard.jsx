@@ -6,6 +6,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ShoppingBag, ImageOff } from "lucide-react";
 import { useCart } from "../context/CartContext.jsx";
+import { useLang } from "../context/LanguageContext.jsx";
+import { translateCategory, translateTag } from "../lib/i18n.js";
 import RacketStatBars from "./RacketStatBars.jsx";
 
 function money(n) {
@@ -20,6 +22,7 @@ const TAG_STYLES = {
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
+  const { t, lang } = useLang();
   const cover = product.images?.[0];
   const cardRef = useRef(null);
   const imgRef = useRef(null);
@@ -70,7 +73,7 @@ export default function ProductCard({ product }) {
               TAG_STYLES[product.tag] || "bg-white/10 text-white"
             }`}
           >
-            {product.tag}
+            {translateTag(product.tag, lang)}
           </span>
         )}
         {cover ? (
@@ -83,7 +86,7 @@ export default function ProductCard({ product }) {
         )}
       </Link>
 
-      <div className="text-xs text-cream/50 font-semibold uppercase tracking-wide mb-1">{product.category}</div>
+      <div className="text-xs text-cream/50 font-semibold uppercase tracking-wide mb-1">{translateCategory(product.category, lang)}</div>
       <Link
         href={`/product/${product.id}`}
         className="font-bold text-white leading-snug mb-2 hover:text-orange2 transition-colors"
@@ -104,12 +107,12 @@ export default function ProductCard({ product }) {
           onClick={() => addItem(product, 1)}
           disabled={product.stock <= 0}
           className="btn-primary w-10 h-10 flex items-center justify-center disabled:from-transparent disabled:to-transparent disabled:bg-white/10"
-          aria-label="Додати в кошик"
+          aria-label={t("catalog.addToCart")}
         >
           <ShoppingBag size={16} />
         </button>
       </div>
-      {product.stock <= 0 && <div className="text-xs text-bad mt-2 font-semibold">Немає в наявності</div>}
+      {product.stock <= 0 && <div className="text-xs text-bad mt-2 font-semibold">{t("catalog.outOfStock")}</div>}
     </div>
   );
 }

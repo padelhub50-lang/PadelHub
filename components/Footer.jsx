@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { Phone, Mail, Instagram, Send } from "lucide-react";
+import { useLang } from "../context/LanguageContext.jsx";
 
 export default function Footer({ site }) {
+  const { t } = useLang();
   return (
     <footer id="contacts" className="relative mt-16 bg-gradient-to-br from-[#181310] to-[#2C1608] px-5 md:px-7 pt-14 pb-6 overflow-hidden">
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 relative z-10">
@@ -18,7 +22,7 @@ export default function Footer({ site }) {
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">Контакти</h4>
+          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">{t("footer.contacts")}</h4>
           <div className="flex flex-col gap-2 text-sm text-cream/80">
             <a href={`tel:${site?.contactPhone}`} className="flex items-center gap-2 hover:text-orange2">
               <Phone size={15} /> {site?.contactPhone}
@@ -30,7 +34,7 @@ export default function Footer({ site }) {
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">Ми в соцмережах</h4>
+          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">{t("footer.social")}</h4>
           <div className="flex gap-2">
             {site?.instagram && (
               <a
@@ -56,15 +60,15 @@ export default function Footer({ site }) {
         </div>
 
         <div>
-          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">Керування</h4>
+          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">{t("footer.manage")}</h4>
           <Link href="/admin" className="text-sm text-cream/60 hover:text-orange2">
-            Панель адміністратора →
+            {t("footer.admin")}
           </Link>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto mt-10 pt-5 border-t border-white/10 text-xs text-cream/40 relative z-10">
-        © {new Date().getFullYear()} Padel Hub. Усі права захищені.
+        © {new Date().getFullYear()} Padel Hub. {t("footer.rights")}
       </div>
     </footer>
   );

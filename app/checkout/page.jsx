@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { CreditCard, Truck, Wallet, ChevronLeft, Loader2 } from "lucide-react";
 import { useCart } from "../../context/CartContext.jsx";
+import { useLang } from "../../context/LanguageContext.jsx";
 import Header from "../../components/Header.jsx";
 
 function money(n) {
@@ -23,6 +24,7 @@ function useDebounced(value, delay = 300) {
 
 export default function CheckoutPage() {
   const { items, totalPrice, clear } = useCart();
+  const { t } = useLang();
   const router = useRouter();
 
   const [settings, setSettings] = useState(null);
@@ -82,13 +84,13 @@ export default function CheckoutPage() {
     if (!settings) return [];
     const list = [];
     if (settings.payments?.stripeEnabled)
-      list.push({ id: "stripe", label: "Оплата карткою онлайн (Stripe)", icon: CreditCard });
+      list.push({ id: "stripe", label: t("checkout.payStripe"), icon: CreditCard });
     if (settings.payments?.liqpayEnabled)
-      list.push({ id: "liqpay", label: "Оплата карткою онлайн (LiqPay)", icon: CreditCard });
+      list.push({ id: "liqpay", label: t("checkout.payLiqpay"), icon: CreditCard });
     if (settings.payments?.codEnabled)
-      list.push({ id: "cod", label: "Оплата при отриманні", icon: Wallet });
+      list.push({ id: "cod", label: t("checkout.payCod"), icon: Wallet });
     return list;
-  }, [settings]);
+  }, [settings, t]);
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -96,7 +98,7 @@ export default function CheckoutPage() {
     e.preventDefault();
     setError("");
     if (items.length === 0) {
-      setError("Кошик порожній");
+      setError(t("checkout.cartEmptyError"));
       return;
     }
     setSubmitting(true);
@@ -159,28 +161,30 @@ export default function CheckoutPage() {
       <Header />
       <main className="max-w-5xl mx-auto px-5 md:px-7 py-12">
         <Link href="/" className="inline-flex items-center gap-1 text-cream/60 hover:text-white text-sm mb-6">
-          <ChevronLeft size={16} /> Продовжити покупки
+          <ChevronLeft size={16} /> {t("checkout.continueShopping")}
         </Link>
-        <h1 className="text-3xl font-extrabold text-white mb-8">Оформлення замовлення</h1>
+        <h1 className="text-3xl font-extrabold text-white mb-8">{t("checkout.title")}</h1>
 
         {items.length === 0 ? (
-          <p className="text-cream/60">Кошик порожній. <Link href="/" className="text-orange2">Перейти в каталог →</Link></p>
+          <p className="text-cream/60">
+            {t("checkout.emptyCart")} <Link href="/" className="text-orange2">{t("checkout.goToCatalog")}</Link>
+          </p>
         ) : (
           <div className="grid md:grid-cols-[1fr_360px] gap-10">
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               <div className="card p-6">
-                <h2 className="font-bold text-white mb-4">Контактні дані</h2>
+                <h2 className="font-bold text-white mb-4">{t("checkout.contactInfo")}</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="label">Ім'я та прізвище *</label>
+                    <label className="label">{t("checkout.fullName")}</label>
                     <input required className="input" value={form.name} onChange={update("name")} />
                   </div>
                   <div>
-                    <label className="label">Телефон *</label>
+                    <label className="label">{t("checkout.phone")}</label>
                     <input required className="input" placeholder="+380..." value={form.phone} onChange={update("phone")} />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="label">Email</label>
+                    <label className="label">{t("checkout.email")}</label>
                     <input type="email" className="input" value={form.email} onChange={update("email")} />
                   </div>
                 </div>
@@ -188,12 +192,12 @@ export default function CheckoutPage() {
 
               <div className="card p-6">
                 <h2 className="font-bold text-white mb-4 flex items-center gap-2">
-                  <Truck size={18} /> Доставка
+                  <Truck size={18} /> {t("checkout.delivery")}
                 </h2>
                 {settings?.deliveryConfigured ? (
                   <div className="grid gap-4">
                     <div className="relative">
-                      <label className="label">Місто</label>
+                      <label className="label">{t("checkout.city")}</label>
                       <input
                         className="input"
                         value={cityQuery}
@@ -201,7 +205,7 @@ export default function CheckoutPage() {
                           setCityQuery(e.target.value);
                           setForm((f) => ({ ...f, city: e.target.value, cityRef: "" }));
                         }}
-                        placeholder="Почніть вводити назву міста"
+                        placeholder={t("checkout.cityPlaceholder")}
                       />
                       {cityOptions.length > 0 && (
                         <div className="absolute z-20 mt-1 w-full card max-h-56 overflow-y-auto">
@@ -220,9 +224,9 @@ export default function CheckoutPage() {
                     </div>
                     {form.cityRef && (
                       <div>
-                        <label className="label">Відділення / поштомат</label>
+                        <label className="label">{t("checkout.branch")}</label>
                         <select className="input" value={form.branch} onChange={update("branch")}>
-                          <option value="">Оберіть відділення</option>
+                          <option value="">{t("checkout.chooseBranch")}</option>
                           {branchOptions.map((b) => (
                             <option key={b.ref} value={b.description}>
                               {b.description}
@@ -235,23 +239,23 @@ export default function CheckoutPage() {
                 ) : (
                   <div className="grid gap-4">
                     <div>
-                      <label className="label">Місто</label>
+                      <label className="label">{t("checkout.city")}</label>
                       <input className="input" value={form.city} onChange={update("city")} />
                     </div>
                     <div>
-                      <label className="label">Відділення Нової пошти / адреса</label>
+                      <label className="label">{t("checkout.branchOrAddress")}</label>
                       <input className="input" value={form.branch} onChange={update("branch")} />
                     </div>
                   </div>
                 )}
                 <div className="mt-4">
-                  <label className="label">Коментар до замовлення</label>
+                  <label className="label">{t("checkout.comment")}</label>
                   <textarea className="input min-h-[80px]" value={form.notes} onChange={update("notes")} />
                 </div>
               </div>
 
               <div className="card p-6">
-                <h2 className="font-bold text-white mb-4">Спосіб оплати</h2>
+                <h2 className="font-bold text-white mb-4">{t("checkout.paymentMethod")}</h2>
                 <div className="flex flex-col gap-2">
                   {paymentOptions.map((opt) => (
                     <label
@@ -272,9 +276,7 @@ export default function CheckoutPage() {
                     </label>
                   ))}
                   {paymentOptions.length === 0 && (
-                    <p className="text-sm text-bad">
-                      Способи оплати ще не налаштовані. Зверніться до адміністратора магазину.
-                    </p>
+                    <p className="text-sm text-bad">{t("checkout.noPaymentMethods")}</p>
                   )}
                 </div>
               </div>
@@ -288,12 +290,12 @@ export default function CheckoutPage() {
                 className="btn-primary py-4 flex items-center justify-center gap-2 text-base"
               >
                 {submitting && <Loader2 size={18} className="animate-spin" />}
-                Підтвердити замовлення на {money(totalPrice)}
+                {t("checkout.confirm")} {money(totalPrice)}
               </motion.button>
             </form>
 
             <aside className="card p-6 h-fit sticky top-24">
-              <h2 className="font-bold text-white mb-4">Ваше замовлення</h2>
+              <h2 className="font-bold text-white mb-4">{t("checkout.yourOrder")}</h2>
               <div className="flex flex-col gap-3 mb-4">
                 {items.map((it) => (
                   <div key={it.productId} className="flex justify-between text-sm">
@@ -305,12 +307,10 @@ export default function CheckoutPage() {
                 ))}
               </div>
               <div className="flex justify-between pt-4 border-t border-line">
-                <span className="text-cream/70">Разом</span>
+                <span className="text-cream/70">{t("cart.total")}</span>
                 <span className="text-xl font-extrabold text-white">{money(totalPrice)}</span>
               </div>
-              <p className="text-xs text-cream/40 mt-3">
-                Вартість доставки Новою поштою оплачується окремо, згідно тарифів перевізника.
-              </p>
+              <p className="text-xs text-cream/40 mt-3">{t("checkout.deliveryNote")}</p>
             </aside>
           </div>
         )}

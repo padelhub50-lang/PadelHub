@@ -4,17 +4,19 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useLang } from "../context/LanguageContext.jsx";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const STATS = [
-  { value: 1, suffix: " день", label: "до відправки замовлення" },
-  { value: 50, suffix: "+", label: "брендів та моделей у каталозі" },
-  { value: 1000, suffix: "+", label: "гравців обрали Padel Hub" },
-];
-
 export default function StatementSection() {
   const root = useRef(null);
+  const { t, lang } = useLang();
+
+  const STATS = [
+    { value: 1, suffix: t("statement.suffix1"), label: t("statement.stat1") },
+    { value: 50, suffix: "+", label: t("statement.stat2") },
+    { value: 1000, suffix: "+", label: t("statement.stat3") },
+  ];
 
   useGSAP(
     () => {
@@ -41,7 +43,7 @@ export default function StatementSection() {
             ease: "power2.out",
             scrollTrigger: { trigger: el, start: "top 85%" },
             onUpdate: () => {
-              el.textContent = Math.round(counter.val).toLocaleString("uk-UA");
+              el.textContent = Math.round(counter.val).toLocaleString(lang === "en" ? "en-US" : "uk-UA");
             },
           });
         });
@@ -58,9 +60,9 @@ export default function StatementSection() {
     >
       <div className="max-w-4xl">
         <p data-statement-text className="text-2xl md:text-4xl font-extrabold text-white leading-snug">
-          Кожен удар — це результат правильного спорядження.
+          {t("statement.text1")}
           <br />
-          <span className="text-orange2">Padel Hub</span> підбирає його за вас.
+          <span className="text-orange2">Padel Hub</span> {t("statement.text2")}
         </p>
 
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8">
