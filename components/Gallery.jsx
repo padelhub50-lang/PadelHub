@@ -10,7 +10,7 @@ export default function Gallery({ images = [], alt }) {
 
   return (
     <div>
-      <div className="card overflow-hidden aspect-square relative mb-3">
+      <div className="card overflow-hidden aspect-square relative mb-3 p-4">
         <AnimatePresence mode="wait">
           {pics[active] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -22,7 +22,7 @@ export default function Gallery({ images = [], alt }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-cream/30">
@@ -37,13 +37,13 @@ export default function Gallery({ images = [], alt }) {
             <button
               key={i}
               onClick={() => setActive(i)}
-              className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors ${
+              className={`aspect-square rounded-lg overflow-hidden border-2 transition-colors p-1 ${
                 active === i ? "border-orange" : "border-transparent"
               } bg-bg3`}
             >
               {src ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={src} alt={`${alt} ${i + 1}`} className="w-full h-full object-cover" />
+                <img src={src} alt={`${alt} ${i + 1}`} className="w-full h-full object-contain" />
               ) : null}
             </button>
           ))}

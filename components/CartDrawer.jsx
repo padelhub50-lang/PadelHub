@@ -47,10 +47,10 @@ export default function CartDrawer() {
               ) : (
                 items.map((it) => (
                   <div key={it.productId} className="flex gap-3 card p-3">
-                    <div className="w-16 h-16 rounded-lg bg-bg3 overflow-hidden shrink-0">
+                    <div className="w-16 h-16 rounded-lg bg-bg3 overflow-hidden shrink-0 p-1">
                       {it.image ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={it.image} alt={it.name} className="w-full h-full object-cover" />
+                        <img src={it.image} alt={it.name} className="w-full h-full object-contain" />
                       ) : null}
                     </div>
                     <div className="flex-1 min-w-0">

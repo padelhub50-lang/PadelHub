@@ -189,11 +189,11 @@ export default function RacketQuiz({ products }) {
                     <div key={product.id} className="flex gap-3 p-3 rounded-xl bg-white/5 border border-line">
                       <Link
                         href={`/product/${product.id}`}
-                        className="shrink-0 w-14 h-14 rounded-lg overflow-hidden bg-gradient-to-br from-bg3 to-bg2 flex items-center justify-center"
+                        className="shrink-0 w-14 h-14 rounded-lg overflow-hidden bg-gradient-to-br from-bg3 to-bg2 flex items-center justify-center p-1"
                       >
                         {product.images?.[0] ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
                         ) : (
                           <ImageOff size={18} className="text-cream/30" />
                         )}
