@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Phone, Mail, Instagram, Send } from "lucide-react";
 import { useLang } from "../context/LanguageContext.jsx";
 
@@ -9,7 +8,7 @@ export default function Footer({ site }) {
   const aboutText = (lang === "en" && site?.aboutTextEn) || site?.aboutText;
   return (
     <footer id="contacts" className="relative mt-16 bg-gradient-to-br from-[#181310] to-[#2C1608] px-5 md:px-7 pt-14 pb-6 overflow-hidden">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 relative z-10">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10 relative z-10">
         <div>
           <div className="flex items-center gap-2.5 mb-3">
             <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange to-rust flex items-center justify-center font-extrabold text-white">
@@ -58,13 +57,6 @@ export default function Footer({ site }) {
               </a>
             )}
           </div>
-        </div>
-
-        <div>
-          <h4 className="text-white font-bold mb-3 text-sm uppercase tracking-wide">{t("footer.manage")}</h4>
-          <Link href="/admin" className="text-sm text-cream/60 hover:text-orange2">
-            {t("footer.admin")}
-          </Link>
         </div>
       </div>
 
