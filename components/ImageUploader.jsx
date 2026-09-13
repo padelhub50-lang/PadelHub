@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Plus, X, Loader2, ImageOff } from "lucide-react";
 
 const MAX_IMAGES = 5;
+const MAX_BYTES = 4 * 1024 * 1024;
 
 export default function ImageUploader({ images = [], onChange }) {
   const [uploadingIndex, setUploadingIndex] = useState(-1);
@@ -15,16 +16,37 @@ export default function ImageUploader({ images = [], onChange }) {
   const handleFile = async (file) => {
     setError("");
     if (!file) return;
+    if (!file.type?.startsWith("image/")) {
+      setError("Дозволені лише зображення");
+      return;
+    }
+    if (file.size > MAX_BYTES) {
+      setError("Файл завеликий (максимум 4МБ)");
+      return;
+    }
     setUploadingIndex(images.length);
     const formData = new FormData();
     formData.append("file", file);
     try {
       const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Помилка завантаження");
+      let data = null;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Помилка завантаження. Спробуйте ще раз.");
+      }
+      if (!res.ok) throw new Error(data?.error || "Помилка завантаження");
       onChange([...images, data.url].slice(0, MAX_IMAGES));
     } catch (err) {
-      setError(err.message);
+      console.error("Image upload failed:", err);
+      const knownMessages = [
+        "Файл не знайдено",
+        "Дозволені лише зображення",
+        "Файл завеликий (максимум 4МБ)",
+        "Помилка завантаження",
+        "Помилка завантаження. Спробуйте ще раз.",
+      ];
+      setError(knownMessages.includes(err.message) ? err.message : "Не вдалося завантажити фото. Спробуйте ще раз.");
     } finally {
       setUploadingIndex(-1);
     }
