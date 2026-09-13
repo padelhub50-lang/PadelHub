@@ -4,6 +4,7 @@ import Header from "../../../components/Header.jsx";
 import Footer from "../../../components/Footer.jsx";
 import Gallery from "../../../components/Gallery.jsx";
 import ProductInfo from "../../../components/ProductInfo.jsx";
+import AmbientBackground from "../../../components/AmbientBackground.jsx";
 
 export const dynamic = "force-dynamic";
 
@@ -15,8 +16,9 @@ export default function ProductPage({ params }) {
   return (
     <>
       <Header />
-      <main className="max-w-6xl mx-auto px-5 md:px-7 py-12">
-        <div className="grid md:grid-cols-2 gap-12">
+      <main className="relative overflow-hidden py-12">
+        <AmbientBackground />
+        <div className="relative z-10 max-w-6xl mx-auto px-5 md:px-7 grid md:grid-cols-2 gap-12">
           <Gallery images={product.images} alt={product.name} />
           <ProductInfo product={product} />
         </div>

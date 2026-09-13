@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ProductCard from "./ProductCard.jsx";
+import AmbientBackground from "./AmbientBackground.jsx";
 import { useLang } from "../context/LanguageContext.jsx";
 import { translateCategory } from "../lib/i18n.js";
 
@@ -43,33 +44,36 @@ export default function ProductGrid({ products }) {
   );
 
   return (
-    <section id="catalog" className="max-w-7xl mx-auto px-5 md:px-7 py-16">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("catalog.title")}</h2>
-        <div className="flex flex-wrap gap-2">
-          {categories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setActive(c)}
-              className={`chip ${active === c ? "chip-active" : ""}`}
-            >
-              {c === ALL ? t("catalog.all") : translateCategory(c, lang)}
-            </button>
-          ))}
+    <section id="catalog" className="relative overflow-hidden py-16">
+      <AmbientBackground />
+      <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-7">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("catalog.title")}</h2>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((c) => (
+              <button
+                key={c}
+                onClick={() => setActive(c)}
+                className={`chip ${active === c ? "chip-active" : ""}`}
+              >
+                {c === ALL ? t("catalog.all") : translateCategory(c, lang)}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {filtered.length === 0 ? (
-        <p className="text-cream/50 text-center py-16">{t("catalog.empty")}</p>
-      ) : (
-        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filtered.map((p) => (
-            <div key={p.id} data-grid-item>
-              <ProductCard product={p} />
-            </div>
-          ))}
-        </div>
-      )}
+        {filtered.length === 0 ? (
+          <p className="text-cream/50 text-center py-16">{t("catalog.empty")}</p>
+        ) : (
+          <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {filtered.map((p) => (
+              <div key={p.id} data-grid-item>
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 }
