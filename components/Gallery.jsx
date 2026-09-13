@@ -27,7 +27,16 @@ export default function Gallery({ images = [], alt }) {
 
   return (
     <div>
-      <div className="card overflow-hidden aspect-square relative mb-3 p-4 group">
+      <div className="card overflow-hidden aspect-square relative mb-3 group">
+        {pics[active] && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={pics[active]}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-40"
+          />
+        )}
         <AnimatePresence mode="wait">
           {pics[active] ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -39,7 +48,7 @@ export default function Gallery({ images = [], alt }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="w-full h-full object-contain cursor-zoom-in"
+              className="absolute inset-0 w-full h-full object-contain p-4 cursor-zoom-in"
               onClick={() => setLightbox(true)}
             />
           ) : (

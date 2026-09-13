@@ -65,7 +65,7 @@ export default function ProductCard({ product }) {
     <div ref={cardRef} className="card p-4 flex flex-col will-change-transform">
       <Link
         href={`/product/${product.id}`}
-        className="block relative rounded-xl overflow-hidden h-40 mb-4 bg-gradient-to-br from-bg3 to-bg2 p-2"
+        className="block relative rounded-xl overflow-hidden h-40 mb-4 bg-gradient-to-br from-bg3 to-bg2"
       >
         {product.tag && (
           <span
@@ -77,8 +77,22 @@ export default function ProductCard({ product }) {
           </span>
         )}
         {cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img ref={imgRef} src={cover} alt={product.name} className="w-full h-full object-contain" />
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={cover}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover blur-2xl scale-125 opacity-40"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={imgRef}
+              src={cover}
+              alt={product.name}
+              className="absolute inset-0 w-full h-full object-contain p-2"
+            />
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-cream/30">
             <ImageOff size={28} />
