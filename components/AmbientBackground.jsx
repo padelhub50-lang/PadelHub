@@ -23,8 +23,15 @@ export default function AmbientBackground() {
     { scope: root }
   );
 
+  // Fade the whole layer in/out at the section edges so it never ends in a
+  // hard horizontal seam against the section above/below it.
+  const fade = {
+    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+    maskImage: "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+  };
+
   return (
-    <div ref={root} className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div ref={root} className="absolute inset-0 overflow-hidden pointer-events-none" style={fade} aria-hidden="true">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_0%,rgba(255,90,31,0.14),transparent_65%)]" />
       <div data-ambient="a" className="absolute top-[4%] left-[2%] w-80 h-80 md:w-[28rem] md:h-[28rem] rounded-full bg-orange/25 blur-3xl" />
       <div data-ambient="b" className="absolute bottom-[0%] right-[0%] w-96 h-96 md:w-[32rem] md:h-[32rem] rounded-full bg-gold/20 blur-3xl" />
