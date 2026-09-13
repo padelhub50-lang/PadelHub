@@ -13,7 +13,10 @@ gsap.registerPlugin(SplitText);
 export default function Hero({ site }) {
   const root = useRef(null);
   const ctaRef = useRef(null);
-  const { t } = useLang();
+  const { t, lang } = useLang();
+
+  const heroTitle = (lang === "en" && site?.heroTitleEn) || site?.heroTitle;
+  const heroSubtitle = (lang === "en" && site?.heroSubtitleEn) || site?.heroSubtitle;
 
   useGSAP(
     () => {
@@ -93,11 +96,11 @@ export default function Hero({ site }) {
           data-hero-title
           className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight [perspective:600px]"
         >
-          {site?.heroTitle}
+          {heroTitle}
         </h1>
 
         <p data-hero-subtitle className="mt-5 text-cream/70 text-base md:text-lg max-w-xl">
-          {site?.heroSubtitle}
+          {heroSubtitle}
         </p>
 
         <div data-hero-cta className="mt-8 flex flex-wrap items-center justify-center gap-3">

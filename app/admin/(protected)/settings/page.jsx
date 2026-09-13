@@ -80,14 +80,23 @@ export default function AdminSettingsPage() {
 
       {tab === "site" && (
         <div className="card p-6">
-          <Field label="Заголовок на головній">
+          <Field label="Заголовок на головній (UA)">
             <input className="input" value={settings.site.heroTitle} onChange={set("site", "heroTitle")} />
           </Field>
-          <Field label="Підзаголовок на головній">
+          <Field label="Заголовок на головній (EN)" hint="Якщо залишити порожнім — англійською покаже український текст">
+            <input className="input" value={settings.site.heroTitleEn} onChange={set("site", "heroTitleEn")} />
+          </Field>
+          <Field label="Підзаголовок на головній (UA)">
             <textarea className="input" value={settings.site.heroSubtitle} onChange={set("site", "heroSubtitle")} />
           </Field>
-          <Field label="Текст «Про нас» (у підвалі сайту)">
+          <Field label="Підзаголовок на головній (EN)">
+            <textarea className="input" value={settings.site.heroSubtitleEn} onChange={set("site", "heroSubtitleEn")} />
+          </Field>
+          <Field label="Текст «Про нас» (у підвалі сайту, UA)">
             <textarea className="input min-h-[90px]" value={settings.site.aboutText} onChange={set("site", "aboutText")} />
+          </Field>
+          <Field label="Текст «Про нас» (у підвалі сайту, EN)">
+            <textarea className="input min-h-[90px]" value={settings.site.aboutTextEn} onChange={set("site", "aboutTextEn")} />
           </Field>
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="Телефон">

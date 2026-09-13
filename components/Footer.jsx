@@ -5,7 +5,8 @@ import { Phone, Mail, Instagram, Send } from "lucide-react";
 import { useLang } from "../context/LanguageContext.jsx";
 
 export default function Footer({ site }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+  const aboutText = (lang === "en" && site?.aboutTextEn) || site?.aboutText;
   return (
     <footer id="contacts" className="relative mt-16 bg-gradient-to-br from-[#181310] to-[#2C1608] px-5 md:px-7 pt-14 pb-6 overflow-hidden">
       <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-10 relative z-10">
@@ -18,7 +19,7 @@ export default function Footer({ site }) {
               Padel<span className="text-orange2">Hub</span>
             </span>
           </div>
-          <p className="text-sm text-cream/70 leading-relaxed max-w-xs">{site?.aboutText}</p>
+          <p className="text-sm text-cream/70 leading-relaxed max-w-xs">{aboutText}</p>
         </div>
 
         <div>
