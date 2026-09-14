@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 import ProductCard from "./ProductCard.jsx";
 import AmbientBackground from "./AmbientBackground.jsx";
 import { useLang } from "../context/LanguageContext.jsx";
@@ -78,12 +78,11 @@ export default function ProductGrid({ products }) {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
           <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("catalog.title")}</h2>
           <div className="relative w-full sm:w-64">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/40 pointer-events-none" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("catalog.searchPlaceholder")}
-              className="input pl-11 pr-9 py-2.5 text-sm !bg-bg2 !text-white placeholder:!text-cream/50"
+              className="input pr-9 py-2.5 text-sm !bg-bg2 !text-white placeholder:!text-cream/50"
             />
             {search && (
               <button
