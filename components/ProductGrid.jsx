@@ -22,11 +22,19 @@ export default function ProductGrid({ products }) {
   const [active, setActive] = useState(ALL);
   const [activeBrand, setActiveBrand] = useState(ALL_BRANDS);
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const gridRef = useRef(null);
 
   useEffect(() => {
     setActiveBrand(ALL_BRANDS);
   }, [active]);
+
+  // Debounce so the grid only re-filters (and re-animates) a beat after
+  // typing pauses, instead of re-running on every keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 250);
+    return () => clearTimeout(t);
+  }, [search]);
 
   const brandsForCategory = useMemo(() => {
     if (active === ALL) return [];
@@ -37,10 +45,10 @@ export default function ProductGrid({ products }) {
   const filtered = useMemo(() => {
     let list = active === ALL ? products : products.filter((p) => p.category === active);
     if (activeBrand !== ALL_BRANDS) list = list.filter((p) => p.brand === activeBrand);
-    const q = search.trim().toLowerCase();
+    const q = debouncedSearch.trim().toLowerCase();
     if (q) list = list.filter((p) => p.name.toLowerCase().includes(q));
     return list;
-  }, [products, active, activeBrand, search]);
+  }, [products, active, activeBrand, debouncedSearch]);
 
   // Grid-aware "wave" reveal — replays on every category switch so filtering
   // itself reads as a deliberate action, not just a re-render.
@@ -60,7 +68,7 @@ export default function ProductGrid({ products }) {
       });
       return () => mm.revert();
     },
-    { scope: gridRef, dependencies: [active, activeBrand, search, filtered.length] }
+    { scope: gridRef, dependencies: [active, activeBrand, debouncedSearch, filtered.length] }
   );
 
   return (
@@ -70,12 +78,12 @@ export default function ProductGrid({ products }) {
         <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
           <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("catalog.title")}</h2>
           <div className="relative w-full sm:w-64">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cream/40" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-cream/40 pointer-events-none" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t("catalog.searchPlaceholder")}
-              className="input pl-9 pr-8 py-2.5 text-sm"
+              className="input pl-11 pr-9 py-2.5 text-sm !bg-bg2 !text-white placeholder:!text-cream/50"
             />
             {search && (
               <button
