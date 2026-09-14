@@ -1,14 +1,16 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
+import { Search, X } from "lucide-react";
 import ProductCard from "./ProductCard.jsx";
 import AmbientBackground from "./AmbientBackground.jsx";
 import { useLang } from "../context/LanguageContext.jsx";
 import { translateCategory } from "../lib/i18n.js";
 
 const ALL = "__all__";
+const ALL_BRANDS = "__all_brands__";
 
 export default function ProductGrid({ products }) {
   const { t, lang } = useLang();
@@ -18,9 +20,27 @@ export default function ProductGrid({ products }) {
   }, [products]);
 
   const [active, setActive] = useState(ALL);
+  const [activeBrand, setActiveBrand] = useState(ALL_BRANDS);
+  const [search, setSearch] = useState("");
   const gridRef = useRef(null);
 
-  const filtered = active === ALL ? products : products.filter((p) => p.category === active);
+  useEffect(() => {
+    setActiveBrand(ALL_BRANDS);
+  }, [active]);
+
+  const brandsForCategory = useMemo(() => {
+    if (active === ALL) return [];
+    const set = new Set(products.filter((p) => p.category === active && p.brand).map((p) => p.brand));
+    return Array.from(set).sort();
+  }, [products, active]);
+
+  const filtered = useMemo(() => {
+    let list = active === ALL ? products : products.filter((p) => p.category === active);
+    if (activeBrand !== ALL_BRANDS) list = list.filter((p) => p.brand === activeBrand);
+    const q = search.trim().toLowerCase();
+    if (q) list = list.filter((p) => p.name.toLowerCase().includes(q));
+    return list;
+  }, [products, active, activeBrand, search]);
 
   // Grid-aware "wave" reveal — replays on every category switch so filtering
   // itself reads as a deliberate action, not just a re-render.
@@ -40,27 +60,66 @@ export default function ProductGrid({ products }) {
       });
       return () => mm.revert();
     },
-    { scope: gridRef, dependencies: [active, filtered.length] }
+    { scope: gridRef, dependencies: [active, activeBrand, search, filtered.length] }
   );
 
   return (
     <section id="catalog" className="relative overflow-hidden py-16">
       <AmbientBackground />
       <div className="relative z-10 max-w-7xl mx-auto px-5 md:px-7">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
           <h2 className="text-2xl md:text-3xl font-extrabold text-white">{t("catalog.title")}</h2>
-          <div className="flex flex-wrap gap-2">
-            {categories.map((c) => (
+          <div className="relative w-full sm:w-64">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-cream/40" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("catalog.searchPlaceholder")}
+              className="input pl-9 pr-8 py-2.5 text-sm"
+            />
+            {search && (
               <button
-                key={c}
-                onClick={() => setActive(c)}
-                className={`chip ${active === c ? "chip-active" : ""}`}
+                onClick={() => setSearch("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-cream/40 hover:text-white"
+                aria-label={t("common.close")}
               >
-                {c === ALL ? t("catalog.all") : translateCategory(c, lang)}
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className={`flex flex-wrap gap-2 ${brandsForCategory.length > 0 ? "mb-4" : "mb-8"}`}>
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setActive(c)}
+              className={`chip ${active === c ? "chip-active" : ""}`}
+            >
+              {c === ALL ? t("catalog.all") : translateCategory(c, lang)}
+            </button>
+          ))}
+        </div>
+
+        {brandsForCategory.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-8">
+            <button
+              onClick={() => setActiveBrand(ALL_BRANDS)}
+              className={`chip ${activeBrand === ALL_BRANDS ? "chip-active" : ""} !text-xs !py-1.5 !px-3.5`}
+            >
+              {t("catalog.allBrands")}
+            </button>
+            {brandsForCategory.map((b) => (
+              <button
+                key={b}
+                onClick={() => setActiveBrand(b)}
+                className={`chip ${activeBrand === b ? "chip-active" : ""} !text-xs !py-1.5 !px-3.5`}
+              >
+                {b}
               </button>
             ))}
           </div>
-        </div>
+        )}
 
         {filtered.length === 0 ? (
           <p className="text-cream/50 text-center py-16">{t("catalog.empty")}</p>

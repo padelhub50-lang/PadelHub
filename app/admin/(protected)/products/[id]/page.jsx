@@ -13,6 +13,7 @@ const TAGS = ["", "Хіт", "Новинка", "Знижка"];
 const EMPTY = {
   name: "",
   category: DEFAULT_CATEGORIES[0],
+  brand: "",
   price: "",
   oldPrice: "",
   stock: 0,
@@ -33,14 +34,20 @@ export default function ProductEditorPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     fetch("/api/products")
       .then((r) => r.json())
       .then((d) => {
         const cats = new Set(DEFAULT_CATEGORIES);
-        (d.products || []).forEach((p) => cats.add(p.category));
+        const brandSet = new Set();
+        (d.products || []).forEach((p) => {
+          cats.add(p.category);
+          if (p.brand) brandSet.add(p.brand);
+        });
         setCategories(Array.from(cats));
+        setBrands(Array.from(brandSet).sort());
       });
   }, []);
 
@@ -108,13 +115,28 @@ export default function ProductEditorPage() {
           <input required className="input" value={form.name} onChange={update("name")} />
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-3 gap-4">
           <div>
             <label className="label">Категорія</label>
             <input list="categories" className="input" value={form.category} onChange={update("category")} />
             <datalist id="categories">
               {categories.map((c) => (
                 <option key={c} value={c} />
+              ))}
+            </datalist>
+          </div>
+          <div>
+            <label className="label">Бренд</label>
+            <input
+              list="brands"
+              className="input"
+              placeholder="напр. Bullpadel"
+              value={form.brand || ""}
+              onChange={update("brand")}
+            />
+            <datalist id="brands">
+              {brands.map((b) => (
+                <option key={b} value={b} />
               ))}
             </datalist>
           </div>
